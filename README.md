@@ -4,13 +4,13 @@ This Python script extracts menu items and quantities from restaurant receipt im
 # 1. Setup Environment
 It is recommended to use a virtual environment.
 
-# Create environment
+Create environment
 python -m venv venv
 
-# Activate environment (Windows)
+Activate environment (Windows)
 venv\Scripts\activate
 
-# Activate environment (Mac/Linux)
+Activate environment (Mac/Linux)
 source venv/bin/activate
 
 # 2. Install Dependencies
@@ -43,7 +43,7 @@ real_menus = [
 
 python your_script_name.py
 
-5. Output
+# 5. Output
 The script will generate two files:
 
 CSV Report: output_csv/sales_table_v1.csv (Clean list of Item + Quantity).
