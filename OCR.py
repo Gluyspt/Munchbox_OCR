@@ -29,8 +29,8 @@ except Exception as e:
 
 # Define file paths
 img_path = 'test_image/sample_bad_image1.jpg'
-output_img_file = 'output_image/layout_detection_v4.jpg'
-output_csv_file = 'output_csv/sales_table_v1.csv'
+output_img_file = 'output_image/layout_detection_v5.jpg'
+output_csv_file = 'output_csv/sales_table_v2.csv'
 
 # Define Regex Filters
 price_regex = re.compile(r'^\d+\.\d{2}$') 
@@ -97,9 +97,13 @@ try:
         text = current_item['text']
         poly = current_item['poly']
         
-        qty = 1 # Default quantity
+        # Start a list to hold boxes for this specific menu item
+        # If it's just one line, this list will have 1 box.
+        # If we find a qty on the next line, we will add that box to this list.
+        current_polys = [poly] 
+        
+        qty = 1 
         name_to_check = text
-        poly_to_draw = poly
         
         # Check for explicit QTY-NAME (1 :เป็ปชี่)
         explicit_match = explicit_qty_name_regex.match(text)
@@ -111,12 +115,10 @@ try:
             if qty_numbers:
                 qty = int(qty_numbers[0])
             
-        
         # Check for name only structure ('หมูคารูบิคุโรบตะ 2' followed by '1')
         elif ':' not in text and '×' not in text:
             
-            # Extract potential quantity embedded in the name ('หมูคารูบิคุโรบตะ 2')
-            # Look for a number separated by a space at the end
+            # 1. Check embedded trailing quantity
             trailing_qty_match = re.search(r'\s(\d+)$', text)
             if trailing_qty_match:
                 qty = int(trailing_qty_match.group(1))
@@ -125,19 +127,21 @@ try:
                 name_to_check = text
                 qty = 1
                 
-            # Check the next line for a standalone quantity
+            # 2. Check the next line for a standalone quantity
             if i + 1 < len(raw_item_list):
-                next_item_text = raw_item_list[i + 1]['text']
+                next_item = raw_item_list[i + 1]
+                next_item_text = next_item['text']
                 standalone_match = standalone_qty_regex.match(next_item_text)
                 
                 if standalone_match:
-                    # Found a standalone quantity, use it and consume the next line
                     qty_numbers = re.findall(r'\d+', standalone_match.group(1))
                     if qty_numbers:
-                        # Use the quantity from the next line
                         qty = int(qty_numbers[0]) 
                     
-                    i += 1
+                    # --- CHANGE: Don't merge. Just add the separate box to our list ---
+                    current_polys.append(next_item['poly'])
+                    
+                    i += 1 # Skip the next line since we used it as quantity
         
 
         # Fuzzy matching and name correction
@@ -148,15 +152,16 @@ try:
         matches = get_close_matches(name_to_check, real_menus, n=1, cutoff=0.6) 
         
         corrected_name = None
-        
         if matches:
             corrected_name = matches[0]
 
         if corrected_name and len(name_to_check) > 2:
             aggregated_items[corrected_name] += qty
-            boxes_to_draw.append(poly_to_draw)
+            
+            # --- CHANGE: Add ALL collected boxes (1 or 2) to the main drawing list
+            boxes_to_draw.extend(current_polys)
         
-        i += 1 
+        i += 1
 
     # Save results 
     
