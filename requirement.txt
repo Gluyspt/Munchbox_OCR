@@ -1,2 +1,2 @@
-paddlepaddle>=3.2.1
+paddlepaddle==3.2.1
 paddleocr==3.3.1
