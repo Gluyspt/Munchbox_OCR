@@ -7,10 +7,14 @@ It is recommended to use a virtual environment.
 '''
 # Create environment
 python -m venv venv
+'''
 
+'''
 # Activate environment (Windows)
 venv\Scripts\activate
+'''
 
+'''
 # Activate environment (Mac/Linux)
 source venv/bin/activate
 '''
