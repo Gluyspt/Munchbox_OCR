@@ -30,7 +30,7 @@ except Exception as e:
 # Define file paths
 img_path = 'test_image/sample_bad_image1.jpg'
 output_img_file = 'output_image/layout_detection_v4.jpg'
-output_csv_file = 'output_csv/sales_table_v4.csv'
+output_csv_file = 'output_csv/sales_table_v1.csv'
 
 # Define Regex Filters
 price_regex = re.compile(r'^\d+\.\d{2}$') 
