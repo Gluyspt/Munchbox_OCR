@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 2. Run the Script Execute the Python file from your terminal:
 ```
-python main.py
+python OCR.py
 ```
 3. First Run Note On the very first run, PaddleOCR will automatically download the Thai (th) language model files (~15MB). Ensure you have an internet connection.
 
